@@ -4,6 +4,11 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+
+svg.lucide {
+	stroke-width: 1.5;
+}
+
 @plugin "@tailwindcss/typography";
 
 @theme {
@@ -90,6 +95,9 @@
 	--color-tradehelp-magenta: #E61A71;
 	--color-tradehelp-green: #92C02E;
 	--color-tradehelp-navy: #001541;
+	--color-tradehelp-buytrade: #113C84;
+
+	--color-light-grey-bg: #F3F8FB;
 }
 
 @layer base {
@@ -109,20 +117,28 @@
 	}
 
 	h2 {
-		@apply text-xl lg:text-2xl;
+		@apply text-4xl lg:text-5xl;
 	}
 
 	h3 {
-		@apply text-lg leading-7 md:text-xl md:leading-8;
+		@apply text-3xl lg:text-4xl;
 	}
 
 	h4 {
-		@apply text-base leading-6 md:text-lg md:leading-7;
+		@apply text-lg md:text-[1.75rem];
+	}
+
+		h5 {
+		@apply text-lg md:text-xl;
 	}
 
 
 	a {
 		@apply text-primary-500 no-underline hover:text-tradehelp-cyan
+	}
+
+	p {
+		@apply font-normal;
 	}
 
 }
@@ -141,6 +157,13 @@
 		@apply max-w-325 mx-auto px-5 md:px-10 w-full;
 	}
 
+	.uppercase-tag {
+		@apply uppercase text-sm font-normal;
+	}
+
+	.card {
+		@apply bg-light-grey-bg border border-grey-50 rounded-lg;
+	}
 }
 
 body {
@@ -159,4 +182,8 @@ body {
 strong,
 b {
 	font-weight: 700;
+}
+
+.lucide {
+	stroke-width: 1.5px;
 }

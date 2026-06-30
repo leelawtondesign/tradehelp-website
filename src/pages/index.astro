@@ -6,14 +6,16 @@ import Layout from '../layouts/Layout.astro';
 import Rocket from '../assets/home/rocket.png';
 import Engineer from '../assets/home/hero_bg.png';
 import EngineerMobile from '../assets/home/hero_bg_mobile.png';
-
+import { Smartphone } from '@lucide/astro';
+import FeatureCard from '../components/FeatureCard.astro';
 import { Image } from 'astro:assets';
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<section class='bg-[#001F2E] mx-4 md:mx-5 rounded-4xl relative overflow-hidden '>
+	<section class='bg-[#001F2E] mx-4 md:mx-5 rounded-4xl relative overflow-hidden'>
 		<div class='content-wrapper relative z-10 pt-15 pb-0 md:py-30'>
-			<div class='text-center md:text-left col-span-12 md:col-span-6 text-white hero-content flex flex-col items-center md:items-start gap-3 md:w-1/2 '>
+			<div
+				class='text-center md:text-left col-span-12 md:col-span-6 text-white hero-content flex flex-col items-center md:items-start gap-3 md:w-1/2'>
 				<Badge text='Trusted by 50,000 Tradespeople' />
 
 				<h1><span class='text-tradehelp-cyan'>Boost </span>your business.</h1>
@@ -29,16 +31,75 @@ import { Image } from 'astro:assets';
 			</div>
 
 			<!-- Mobile engineer: in flow below text -->
-			<Image alt='' src={EngineerMobile} class='hero-engineer md:hidden mt-10 w-4/5 -mr-6 ml-auto block object-bottom-right opacity-0' />
+			<Image
+				alt=''
+				src={EngineerMobile}
+				class='hero-engineer md:hidden mt-10 w-4/5 -mr-6 ml-auto block object-bottom-right opacity-0'
+			/>
 		</div>
 
 		<!-- Desktop engineer: absolute top-right, clamped to right half -->
-		<Image alt='' src={Engineer} class='hero-engineer hidden md:block absolute top-0 right-0 h-[70%] w-1/2 object-contain object-top-right pointer-events-none opacity-0' />
+		<Image
+			alt=''
+			src={Engineer}
+			class='hero-engineer hidden md:block absolute top-0 right-0 h-[70%] w-1/2 object-contain object-top-right pointer-events-none opacity-0'
+		/>
 		<!-- Rocket: decorative overlay -->
-		<Image alt='' src={Rocket} class='hero-rocket absolute bottom-0 md:right-[8%] w-[70%] md:w-[50%] max-w-150 -ml-10 object-contain pointer-events-none z-20 opacity-0' />
+		<Image
+			alt=''
+			src={Rocket}
+			class='hero-rocket absolute bottom-0 md:right-[8%] w-[70%] md:w-[50%] max-w-150 -ml-10 object-contain pointer-events-none z-20 opacity-0'
+		/>
 	</section>
 
-	<section class='content-wrapper min-h-50'></section>
+	<section class='content-wrapper min-h-50 py-15 grid grid-cols-12 gap-5'>
+		<div class='col-span-12 md:col-span-9'>
+			<p class='uppercase-tag text-tradehelp-cyan pb-2'>What's in it for you</p>
+			<h4>One free network, four tools.</h4>
+			<p class='text-text-secondary'>
+				TradeHelp was designed specifically for tradespeople, supporting you with the tools to manage and grow your
+				business.
+			</p>
+		</div>
+
+		<div class='col-span-12 grid grid-cols-12 gap-5'>
+			<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+				<FeatureCard
+					title='TradeHelp Software'
+					description='A comprehensive free app for tradespeople to manage their day to day paperwork with PRO upgrade options.'
+					href='/software'>
+					<Smartphone size={22} />
+				</FeatureCard>
+			</div>
+			<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+				<FeatureCard
+					title='BuyTrade Platform'
+					description='A comprehensive free app for tradespeople to manage their day to day paperwork with PRO upgrade options.'
+					href='/software'
+					color='buytrade'>
+					<Smartphone size={22} />
+				</FeatureCard>
+			</div>
+			<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+				<FeatureCard
+					title='TradeHelp Software'
+					description='A comprehensive free app for tradespeople to manage their day to day paperwork with PRO upgrade options.'
+					href='/software'
+					color='yellow'>
+					<Smartphone size={22} />
+				</FeatureCard>
+			</div>
+			<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+				<FeatureCard
+					title='TradeHelp Software'
+					description='A comprehensive free app for tradespeople to manage their day to day paperwork with PRO upgrade options.'
+					href='/software'
+					color='magenta'>
+					<Smartphone size={22} />
+				</FeatureCard>
+			</div>
+		</div>
+	</section>
 </Layout>
 
 <style is:global>
@@ -71,8 +132,12 @@ import { Image } from 'astro:assets';
 	}
 
 	@keyframes fadeIn {
-		from { opacity: 0; }
-		to   { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.hero-engineer {
