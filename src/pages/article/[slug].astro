@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { PortableText } from 'astro-portabletext';
-import SearchHero from '../../components/SearchHero.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { loadQuery } from '../../sanity/lib/load-query';
 
@@ -17,12 +16,12 @@ interface HelpArticle {
 }
 
 export async function getStaticPaths() {
-  const SLUGS_QUERY = `*[_type == "helpArticle" && defined(slug.current)]{
+	const SLUGS_QUERY = `*[_type == "helpArticle" && defined(slug.current)]{
     "params": {"slug": slug.current}
   }`;
 
-  const { data } = await loadQuery<any[]>({ query: SLUGS_QUERY });
-  return data;
+	const { data } = await loadQuery<any[]>({ query: SLUGS_QUERY });
+	return data;
 }
 
 const POST_QUERY = `*[_type == "helpArticle" && slug.current == $slug][0]{
@@ -60,8 +59,6 @@ const breadcrumbCategory = article.category
 ---
 
 <Layout title={article?.title || 'Legal Page'} description={'SITE_DESCRIPTION'}>
-	<SearchHero heading='How can we help?' />
-
 	<section class='py-20'>
 		<div class='content-wrapper'>
 			<article class='max-w-180 mx-auto'>
