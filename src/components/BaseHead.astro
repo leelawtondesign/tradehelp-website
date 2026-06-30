@@ -51,8 +51,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <link rel='alternate' type='application/rss+xml' title={title} href={new URL('rss.xml', Astro.site)} />
 <meta name='generator' content={Astro.generator} />
 
-<!-- Font preloads -->
-<link rel="stylesheet" href="https://use.typekit.net/dov8ptg.css">
+<!-- Fonts -->
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
+<link rel="preconnect" href="https://p.typekit.net" crossorigin>
+<link rel="preload" href="https://use.typekit.net/dov8ptg.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://use.typekit.net/dov8ptg.css"></noscript>
 
 <!-- Canonical URL -->
 <link rel='canonical' href={canonicalURL} />

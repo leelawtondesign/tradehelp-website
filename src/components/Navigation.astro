@@ -12,8 +12,8 @@ const isHome = Astro.url.pathname === '/';
 ---
 
 <nav id='userNav' class='top-0 z-50 w-full bg-white transition-colors duration-300 print:hidden'>
-	<div class='pt-5 pb-3 border-b border-grey-100 text-xs font-normal uppercase text-text-primary tracking-wide'>
-		<div class='px-10 md:px-12 flex items-center justify-end gap-6'>
+	<div class='pt-5 pb-3 border-b border-grey-100 text-[0.6rem] sm:text-xs font-normal uppercase text-text-primary tracking-wide'>
+		<div class='px-7 lg:px-12 flex items-center justify-end gap-4 md:gap-6'>
 			<a class='text-text-primary hover:text-tradehelp-cyan'>Trades</a>
 			<a class='text-text-primary hover:text-tradehelp-cyan'>Homeowners</a>
 			<a class='text-text-primary hover:text-tradehelp-cyan'>Procurement & Consultancy</a>
@@ -24,19 +24,19 @@ const isHome = Astro.url.pathname === '/';
 <nav
 	id='siteHeader'
 	class={`sticky top-0 z-50 w-full bg-white transition-colors duration-300 print:hidden ${isHome ? '' : 'border-b border-grey-100'}`}>
-	<div class='px-10 md:px-12 flex items-center justify-between py-7'>
+	<div class='px-10 lg:px-12 flex items-center justify-between py-7'>
 		<!-- Logo -->
 		<a href='/' class='flex items-center shrink-0'>
 			{logoUrl && <img alt='TradeHelp' src={logoUrl} class='w-35 transition duration-300' />}
 		</a>
 
 		<!-- Desktop: centred nav links -->
-		<div class='hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2'>
+		<div class='hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2'>
 			<MenuItems />
 		</div>
 
 		<!-- Desktop: CTA -->
-		<div class='hidden md:flex items-center shrink-0'>
+		<div class='hidden lg:flex items-center shrink-0'>
 			<a href='#contactFormSection'>
 				<Button variant='dark'> Get Started </Button>
 			</a>
@@ -45,7 +45,7 @@ const isHome = Astro.url.pathname === '/';
 		<button
 			id='menuOpen'
 			type='button'
-			class='md:hidden flex items-center justify-center w-10 h-10 text-gray-700'
+			class='lg:hidden flex items-center justify-center w-10 h-10 text-gray-700'
 			aria-label='Open menu'>
 			<svg id='iconHamburger' class='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 				<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'></path>
@@ -59,7 +59,7 @@ const isHome = Astro.url.pathname === '/';
 	id='mobileMenu'
 	class='fixed inset-0 z-60 bg-white flex flex-col items-center justify-center gap-8
 	       opacity-0 pointer-events-none
-	       transition-opacity duration-300 md:hidden'>
+	       transition-opacity duration-300 lg:hidden'>
 	<!-- Close button -->
 	<button
 		id='menuClose'

@@ -1,5 +1,6 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Scripts from '../components/Scripts.astro';
 import { PUBLIC_RECAPTCHA_SITE_KEY } from '../consts';
 
 const { title, description } = Astro.props;
@@ -38,19 +39,6 @@ const { title, description } = Astro.props;
 		<main>
 			<slot />
 		</main>
-
-		<script
-			is:inline
-			type='text/plain'
-			data-cookieconsent='marketing'
-			src={`https://www.google.com/recaptcha/enterprise.js?render=${PUBLIC_RECAPTCHA_SITE_KEY}`}></script>
-
-		<script is:inline>
-			document.addEventListener('astro:after-swap', () => {
-				if (window.dataLayer) {
-					window.dataLayer.push({ event: 'gtm.js', 'gtm.start': new Date().getTime() });
-				}
-			});
-		</script>
+		<Scripts />
 	</body>
 </html>

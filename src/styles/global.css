@@ -1,4 +1,9 @@
 @import "tailwindcss";
+
+* {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
 @plugin "@tailwindcss/typography";
 
 @theme {
@@ -100,11 +105,11 @@
 	}
 
 	h1 {
-		@apply text-2xl leading-9 lg:text-4xl lg:leading-11;
+		@apply text-5xl lg:text-[4rem] lg:leading-18;
 	}
 
 	h2 {
-		@apply text-xl leading-8 lg:text-2xl lg:leading-9;
+		@apply text-xl lg:text-2xl;
 	}
 
 	h3 {
