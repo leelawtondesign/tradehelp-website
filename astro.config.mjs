@@ -6,12 +6,14 @@ import { defineConfig } from 'astro/config';
 import sanity from '@sanity/astro';
 import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
-import node from '@astrojs/node';
+import netlify from '@astrojs/netlify';
+// import node from '@astrojs/node';
 
 export default defineConfig({
 	site: 'https://support.tradehelp.co.uk/',
 	output: 'server',
-	adapter: node({ mode: 'standalone' }),
+	adapter: netlify(),
+	// adapter: node({ mode: 'standalone' }),
 	integrations: [
 		mdx(),
 		sitemap(),
