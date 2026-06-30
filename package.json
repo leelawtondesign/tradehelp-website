@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^6.0.3",
-		"@astrojs/netlify": "^8.0.0",
+		"@astrojs/netlify": "^7.0.0",
 		"@astrojs/node": "^10.1.4",
 		"@astrojs/rss": "^4.0.18",
 		"@astrojs/sitemap": "^3.7.3",
@@ -34,7 +34,6 @@
 		"tailwindcss": "^4.1.18"
 	},
 	"devDependencies": {
-		"@tailwindcss/typography": "^0.5.19",
-		"@types/aos": "^3.0.8"
+		"@tailwindcss/typography": "^0.5.19"
 	}
 }
