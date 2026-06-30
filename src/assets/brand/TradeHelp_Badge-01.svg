@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" viewBox="0 0 2048 2040" style="enable-background:new 0 0 2048 2040;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#F9B32D;}
+	.st1{fill:url(#SVGID_1_);}
+	.st2{fill:#3EA6DD;}
+	.st3{fill:url(#SVGID_2_);}
+	.st4{fill:#E51770;}
+	.st5{fill:url(#SVGID_3_);}
+	.st6{fill:#91BF2B;}
+	.st7{fill:url(#SVGID_4_);}
+</style>
+<g>
+	<polyline class="st0" points="1014.76,217.17 900.95,217.17 900.95,12.15 538.43,12.15 538.43,487.74 1009.75,864.12  "></polyline>
+	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="1250.4169" y1="12.1508" x2="1250.4169" y2="864.1194">
+		<stop offset="0" style="stop-color:#F6B02C"></stop>
+		<stop offset="1" style="stop-color:#F8DDAB"></stop>
+	</linearGradient>
+	<polyline class="st1" points="1009.75,864.12 1491.09,487.74 1491.09,12.15 1128.57,12.15 1128.57,217.17 1014.76,217.17  "></polyline>
+	<polyline class="st2" points="1014.76,1822.83 1128.57,1822.83 1128.57,2027.85 1491.09,2027.85 1491.09,1552.26 1019.77,1175.88     "></polyline>
+	<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="779.0968" y1="2027.8492" x2="779.0968" y2="1175.8805">
+		<stop offset="0" style="stop-color:#3DA7DE"></stop>
+		<stop offset="1" style="stop-color:#C4DFED"></stop>
+	</linearGradient>
+	<polyline class="st3" points="1019.77,1175.88 538.43,1552.26 538.43,2027.85 900.94,2027.85 900.94,1822.83 1014.76,1822.83  "></polyline>
+	<polyline class="st4" points="1.4,1021.59 1.4,1497.9 476.99,1497.9 875.35,1026.58  "></polyline>
+	<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="1.3993" y1="785.925" x2="875.3521" y2="785.925">
+		<stop offset="0" style="stop-color:#E51772"></stop>
+		<stop offset="1" style="stop-color:#F0BDD4"></stop>
+	</linearGradient>
+	<polyline class="st5" points="875.35,1026.58 476.99,545.27 1.4,545.27 1.4,1021.59  "></polyline>
+	<polyline class="st6" points="2046.6,1021.59 2046.6,545.27 1571.01,545.27 1172.65,1016.59  "></polyline>
+	<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="1172.6479" y1="1257.2451" x2="2046.6007" y2="1257.2451">
+		<stop offset="0" style="stop-color:#CFDF9E"></stop>
+		<stop offset="1" style="stop-color:#91BF29"></stop>
+	</linearGradient>
+	<polyline class="st7" points="1172.65,1016.59 1571.01,1497.9 2046.6,1497.9 2046.6,1021.59  "></polyline>
+</g>
+</svg>

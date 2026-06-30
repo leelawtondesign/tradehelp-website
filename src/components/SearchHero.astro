@@ -1,0 +1,138 @@
+---
+import SearchHeroBg from '../assets/home/searchHeroBg.svg';
+import SearchField from './SearchField.astro';
+
+interface Props {
+	heading?: string;
+}
+
+const { heading = 'Boost your business' } = Astro.props;
+---
+
+<div
+	class='pt-50 pb-20 bg-cover bg-no-repeat text-white bg-secondary-900 text-center flex justify-center flex-col items-center gap-8 px-7 print:hidden'
+	style={{ backgroundImage: `url(${SearchHeroBg.src})` }}>
+	<div class='flex items-center gap-4'>
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			stroke-width='2'
+			stroke-linecap='round'
+			stroke-linejoin='round'
+			class='size-7 md:size-9'
+			><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'></path><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'
+			></path></svg
+		>
+		<h1 class='font-medium mb-1'>{heading}</h1>
+	</div>
+
+	<div class='w-full max-w-150 relative'>
+		<SearchField id='search-articles' placeholder='Search our help centre...' />
+
+		<div
+			id='search-results'
+			class='absolute left-0 right-0 mt-2 bg-white text-black rounded-lg shadow-xl overflow-hidden hidden z-50 text-left'>
+			<ul id='results-list' class='max-h-80 overflow-y-auto m-0 p-0'></ul>
+		</div>
+	</div>
+</div>
+
+<script>
+	import Fuse from 'fuse.js';
+
+	let fuse: any;
+	const input = document.getElementById('search-articles') as HTMLInputElement;
+	const resultsWrapper = document.getElementById('search-results');
+	const resultsList = document.getElementById('results-list');
+
+	function createSnippet(text: string, query: string) {
+		if (!text) return '';
+
+		const index = text.toLowerCase().indexOf(query.toLowerCase());
+
+		if (index === -1) {
+			return text.length > 100 ? text.substring(0, 100) + '...' : text;
+		}
+
+		const start = Math.max(0, index - 40);
+		const end = Math.min(text.length, index + 80);
+		let snippet = text.substring(start, end);
+
+		if (start > 0) snippet = '...' + snippet;
+		if (end < text.length) snippet = snippet + '...';
+
+		const highlighted = snippet.replace(
+			new RegExp(query, 'gi'),
+			(match) => `<b class="text-secondary-900 font-bold underline decoration-secondary-200">${match}</b>`,
+		);
+
+		return highlighted;
+	}
+
+	async function init() {
+		try {
+			const res = await fetch('/search.json');
+			const data = await res.json();
+
+			fuse = new Fuse(data, {
+				keys: [
+					{ name: 'title', weight: 0.7 },
+					{ name: 'content', weight: 0.3 },
+				],
+				threshold: 0.4,
+				ignoreLocation: true,
+			});
+		} catch (err) {
+			console.error('Search index failed to load:', err);
+		}
+	}
+
+	input?.addEventListener('input', (e) => {
+		const value = (e.target as HTMLInputElement).value;
+
+		if (value.length < 2 || !fuse) {
+			resultsWrapper?.classList.add('hidden');
+			return;
+		}
+
+		const results = fuse.search(value).slice(0, 5);
+
+		if (results.length > 0) {
+			resultsList!.innerHTML = results
+				.map((r: any) => {
+					const titleHighlighted = r.item.title.replace(
+						new RegExp(value, 'gi'),
+						(match: string) => `<b class="underline decoration-secondary-300">${match}</b>`,
+					);
+
+					const snippet = createSnippet(r.item.content, value);
+
+					return `
+          <li class="border-b border-gray-100 last:border-0">
+            <a href="/article/${r.item.slug}" class="block p-4 hover:bg-gray-50 transition-colors">
+              <span class="block font-bold text-secondary-900">${titleHighlighted}</span>
+              <span class="block text-sm text-gray-500 mt-1">${snippet}</span>
+            </a>
+          </li>
+        `;
+				})
+				.join('');
+			resultsWrapper?.classList.remove('hidden');
+		} else {
+			resultsList!.innerHTML = `<li class="p-4 text-gray-500">No results found for "${value}"</li>`;
+			resultsWrapper?.classList.remove('hidden');
+		}
+	});
+
+	document.addEventListener('click', (e) => {
+		if (!input?.contains(e.target as Node) && !resultsWrapper?.contains(e.target as Node)) {
+			resultsWrapper?.classList.add('hidden');
+		}
+	});
+
+	init();
+</script>

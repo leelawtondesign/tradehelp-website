@@ -1,0 +1,122 @@
+---
+import { loadQuery } from '../sanity/lib/load-query';
+import TradeHelpLogo from '../assets/brand/TradeHelpLogo_Inverse.svg';
+import type { Footer, SiteSettings } from '../sanity/types';
+
+const today = new Date();
+
+const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
+  ...,
+  logo{
+    ...,
+    asset->{
+      _id,
+      url
+    }
+  },
+}`;
+
+const FOOTER_QUERY = `*[_type == "footer"][0]`;
+
+const { data: siteSettings } = await loadQuery<SiteSettings>({
+	query: SITE_SETTINGS_QUERY,
+});
+
+const { data: footer } = await loadQuery<Footer>({
+	query: FOOTER_QUERY,
+});
+
+if (!siteSettings) {
+	console.warn('Site settings not found in Sanity');
+}
+---
+
+<footer class='bg-secondary-900 text-white py-15 print:hidden font-normal'>
+	<div class='content-wrapper'>
+		<div
+			class='grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-10 pb-10 text-center md:text-start tracking-wide border-b-text-secondary border-b'>
+			<!-- Logo & tagline -->
+			<div class='flex flex-col gap-8 md:col-span-4'>
+				{
+					TradeHelpLogo?.src && (
+						<a href='/'>
+							<img src={TradeHelpLogo?.src} alt='Logo' class='w-32 mx-auto md:ml-0 md:mr-auto' />
+						</a>
+					)
+				}
+				<div>
+					<p class='text-text-secondary text-sm'>{footer.column1?.description}</p>
+					<p class='text-sm leading-7 pt-0.5'></p>
+				</div>
+				<div class='flex flex-col gap-4'>
+					<p class='text-white text-sm'>Location & Contact</p>
+					<p class='text-sm pt-0.5 text-text-secondary'>{siteSettings.address}</p>
+					<a class='text-sm text-text-secondary hover:text-white pt-0.5' href={`tel:${siteSettings.phone}`}
+						>{siteSettings.phone}</a
+					>
+					<a class='text-sm text-text-secondary hover:text-white pt-0.5' href={`mailto:${siteSettings.email}`}
+						>{siteSettings.email}</a
+					>
+				</div>
+			</div>
+
+			<!-- About (Empty placeholders from your original snippet) -->
+			<div class='md:col-span-2 flex flex-col gap-2'>
+				<p class='text-white text-sm'>{footer.column2?.heading}</p>
+				{
+					footer.column2?.links?.map((link) => (
+						<div>
+							<a class='text-sm text-text-secondary hover:text-white pt-0.5' href={link.href}>
+								{link.label}
+							</a>
+						</div>
+					))
+				}
+			</div>
+
+			<!-- Information links -->
+			<div class='md:col-span-2 flex flex-col gap-2'>
+				<p class='text-white text-sm'>{footer.column3?.heading}</p>
+				{
+					footer.column3?.links?.map((link) => (
+						<div>
+							<a class='text-sm text-text-secondary hover:text-white pt-0.5' href={link.href}>
+								{link.label}
+							</a>
+						</div>
+					))
+				}
+			</div>
+
+			<!-- Contact -->
+			<div class='text-sm leading-7 md:col-span-2'>
+				<a
+					class='ecologi'
+					href='https://ecologi.com/tradehelpltd?r=5faa9c37e040b9001d10fcb9'
+					target='_blank'
+					rel='noopener noreferrer'
+					title='View our Ecologi profile'
+					style='height:120px;display:inline-block;'>
+					<img
+						alt='We plant trees with Ecologi'
+						src='https://api.ecologi.com/badges/trees/5faa9c37e040b9001d10fcb9?white=true&treeOnly=true'
+						style='height:70px;'
+					/></a
+				>
+			</div>
+		</div>
+	</div>
+
+	<!-- Copyright -->
+	<div class='pt-6 pb-4 text-text-secondary'>
+		<div class='content-wrapper'>
+			<p class='text-sm leading-7 pt-0.5 opacity-80'>
+				Copyright © {today.getFullYear()} tradehelp.co.uk All Rights Reserved
+			</p>
+			<p class='text-[0.7rem] pt-2'>
+				{siteSettings.address}, authorised and regulated by the Financial Conduct Authority (697812), registered in
+				England (03712438)
+			</p>
+		</div>
+	</div>
+</footer>

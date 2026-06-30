@@ -1,0 +1,29 @@
+---
+interface Props {
+	title: string;
+	open?: boolean;
+}
+
+const { title, open = false } = Astro.props;
+---
+
+<details class='group [&_summary::-webkit-details-marker]:hidden' open={open}>
+	<summary
+		class='flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white px-6 py-5 font-medium text-gray-900 hover:bg-gray-50'>
+		<span>{title}</span>
+
+		<svg
+			class='size-6 shrink-0 transition-transform duration-300 group-open:-rotate-180 text-primary-500'
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			stroke='currentColor'
+			aria-hidden='true'>
+			<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'></path>
+		</svg>
+	</summary>
+
+	<div class='p-4 text-gray-700'>
+		<slot />
+	</div>
+</details>

@@ -1,0 +1,24 @@
+---
+interface Props {
+	url: string;
+	class?: string;
+}
+
+const { url, class: className } = Astro.props;
+
+// 1. Fetch the raw SVG code from the Sanity CDN
+const response = await fetch(url);
+let svgCode = await response.text();
+
+/** * 2. Sanitize/Clean the SVG
+ * We remove hardcoded widths/heights so Tailwind can control them,
+ * and ensure fill/stroke are set to 'currentColor'.
+ */
+const cleanedSvg = svgCode
+	.replace(/width=".*?"/g, 'width="100%"')
+	.replace(/height=".*?"/g, 'height="100%"')
+	.replace(/fill="(?!none).*?"/g, 'fill="currentColor"')
+	.replace(/stroke="(?!none).*?"/g, 'stroke="currentColor"');
+---
+
+<div class:list={['inline-block', className]} set:html={cleanedSvg} />

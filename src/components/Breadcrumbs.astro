@@ -1,0 +1,36 @@
+---
+interface Props {
+  category?: {
+    name: string;
+    href: string;
+  };
+  currentTitle: string;
+}
+
+const { category, currentTitle } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="flex mb-6">
+  <ol class="flex items-center space-x-2 text-sm text-secondary-400 list-none p-0 m-0">
+    <li>
+      <a href="/" class="hover:text-primary-600 transition-colors">Home</a>
+    </li>
+
+    <li class="select-none text-secondary-300" aria-hidden="true">/</li>
+
+    {category && (
+      <>
+        <li>
+          <a href={category.href} class="hover:text-primary-600 transition-colors">
+            {category.name}
+          </a>
+        </li>
+        <li class="select-none text-secondary-300" aria-hidden="true">/</li>
+      </>
+    )}
+
+    <li class="text-secondary-900 font-medium truncate max-w-[200px] sm:max-w-none" aria-current="page">
+      {currentTitle}
+    </li>
+  </ol>
+</nav>

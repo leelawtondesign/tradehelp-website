@@ -1,0 +1,58 @@
+---
+// src/components/FormInput.astro
+interface Props {
+	id: string;
+	name?: string;
+	type?: 'text' | 'email' | 'password' | 'tel' | 'url';
+	placeholder?: string;
+	required?: boolean;
+	label?: string; // Added label prop
+	value?: string;
+	className?: string;
+	rows?: number;
+	autocomplete?: string; // Added autocomplete prop
+}
+
+const {
+	id,
+	name = id,
+	type = 'text',
+	placeholder,
+	required = false,
+	value,
+	className = '',
+	rows,
+	autocomplete,
+} = Astro.props;
+
+const inputClasses = [
+	'bg-neutral-secondary-medium border border-default-medium border-primary-600 text-heading text-sm rounded-base focus:ring-brand focus:border-brand w-full px-3 shadow-xs placeholder:text-body bg-white rounded transition-all',
+	rows ? 'py-3' : 'py-4',
+	className,
+];
+---
+
+<div class='w-full flex flex-col gap-2'>
+	{
+		rows ? (
+	<textarea 
+  id={id} 
+  name={name} 
+  rows={rows} 
+  class:list={[inputClasses, 'min-h-30 py-3 resize-y']} 
+  placeholder={placeholder} 
+  required={required} autocomplete={autocomplete}>{value}</textarea>
+		) : (
+			<input
+				type={type}
+				id={id}
+				name={name}
+				value={value}
+				class:list={inputClasses}
+				placeholder={placeholder}
+				required={required}
+				autocomplete={autocomplete}
+			/>
+		)
+	}
+</div>

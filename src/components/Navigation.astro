@@ -1,0 +1,104 @@
+---
+import Button from './Button.astro';
+import MenuItems from './MenuItems.astro';
+import { loadQuery } from '../sanity/lib/load-query';
+type NavSettings = { logo?: { asset?: { url: string } } };
+
+const { data: siteSettings } = await loadQuery<NavSettings>({
+	query: `*[_type == "siteSettings"][0]{ logo{ asset->{ url } } }`,
+});
+const logoUrl = siteSettings?.logo?.asset?.url;
+const isHome = Astro.url.pathname === '/';
+---
+
+<nav id='userNav' class='top-0 z-50 w-full bg-white transition-colors duration-300 print:hidden'>
+	<div class='pt-5 pb-3 border-b border-grey-100 text-xs font-normal uppercase text-text-primary tracking-wide'>
+		<div class='px-10 md:px-12 flex items-center justify-end gap-6'>
+			<a class='text-text-primary hover:text-tradehelp-cyan'>Trades</a>
+			<a class='text-text-primary hover:text-tradehelp-cyan'>Homeowners</a>
+			<a class='text-text-primary hover:text-tradehelp-cyan'>Procurement & Consultancy</a>
+		</div>
+	</div>
+</nav>
+
+<nav
+	id='siteHeader'
+	class={`sticky top-0 z-50 w-full bg-white transition-colors duration-300 print:hidden ${isHome ? '' : 'border-b border-grey-100'}`}>
+	<div class='px-10 md:px-12 flex items-center justify-between py-7'>
+		<!-- Logo -->
+		<a href='/' class='flex items-center shrink-0'>
+			{logoUrl && <img alt='TradeHelp' src={logoUrl} class='w-35 transition duration-300' />}
+		</a>
+
+		<!-- Desktop: centred nav links -->
+		<div class='hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2'>
+			<MenuItems />
+		</div>
+
+		<!-- Desktop: CTA -->
+		<div class='hidden md:flex items-center shrink-0'>
+			<a href='#contactFormSection'>
+				<Button variant='dark'> Get Started </Button>
+			</a>
+		</div>
+		<!-- Mobile: hamburger -->
+		<button
+			id='menuOpen'
+			type='button'
+			class='md:hidden flex items-center justify-center w-10 h-10 text-gray-700'
+			aria-label='Open menu'>
+			<svg id='iconHamburger' class='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+				<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'></path>
+			</svg>
+		</button>
+	</div>
+</nav>
+
+<!-- Mobile full-screen menu -->
+<div
+	id='mobileMenu'
+	class='fixed inset-0 z-60 bg-white flex flex-col items-center justify-center gap-8
+	       opacity-0 pointer-events-none
+	       transition-opacity duration-300 md:hidden'>
+	<!-- Close button -->
+	<button
+		id='menuClose'
+		type='button'
+		class='absolute top-5 right-5 w-10 h-10 flex items-center justify-center text-gray-700'
+		aria-label='Close menu'>
+		<svg class='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+			<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
+		</svg>
+	</button>
+
+	<MenuItems mobile />
+	<a href='#contactFormSection' class='mt-4'>
+		<Button variant='dark'> Contact Us </Button>
+	</a>
+</div>
+
+<script>
+	const menuOpen = document.getElementById('menuOpen')!;
+	const menuClose = document.getElementById('menuClose')!;
+	const menu = document.getElementById('mobileMenu')!;
+
+	function openMenu() {
+		menu.classList.remove('opacity-0', 'pointer-events-none');
+		menu.classList.add('opacity-100');
+		document.body.style.overflow = 'hidden';
+	}
+
+	function closeMenu() {
+		menu.classList.remove('opacity-100');
+		menu.classList.add('opacity-0', 'pointer-events-none');
+		document.body.style.overflow = '';
+	}
+
+	menuOpen.addEventListener('click', openMenu);
+	menuClose.addEventListener('click', closeMenu);
+
+	// Close when any link inside the mobile menu is tapped
+	menu.querySelectorAll('a').forEach((link) => {
+		link.addEventListener('click', closeMenu);
+	});
+</script>

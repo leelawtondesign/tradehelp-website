@@ -1,0 +1,27 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Navigation from '../components/Navigation.astro';
+
+const { title, description } = Astro.props;
+---
+
+<html lang='en'>
+	<head>
+		<script
+			is:inline
+			id='cookieyes'
+			type='text/javascript'
+			src='https://cdn-cookieyes.com/client_data/0ab04d1455288d668035597776a739cf/script.js'
+			'></script>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body class='overflow-x-hidden'>
+		<Navigation />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

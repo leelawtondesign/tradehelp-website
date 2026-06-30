@@ -1,0 +1,137 @@
+---
+import Button from './Button.astro';
+import TextField from './TextField.astro';
+---
+
+<section id='contactFormSection'>
+	<div class='content-wrapper text-center py-20'>
+		<div class='gradient-divider md:mr-auto mb-5'></div>
+
+		<h2 class='pb-2 leading-tight max-w-100 mx-auto'>Get in touch</h2>
+
+		<p class='max-w-170 mx-auto'>
+			Our friendly team are here to help. Whether you have a general enquiry or need product or technical assistance,
+			you can call us on 01978 666 888, Monday to Friday 8.30am to 5.00pm or complete the form below.
+		</p>
+
+		<div id='form-container' class='w-full'>
+			<form class='space-y-4 w-full pt-10 pb-14 text-secondary-600' id='contact-form'>
+				<div class='grid grid-cols-1 md:grid-cols-4 gap-5'>
+					<div class='col-span-4 md:col-span-1'>
+						<TextField
+							id='first_name'
+							label='First Name'
+							placeholder='Enter first name...'
+							autocomplete='given-name'
+							required
+						/>
+					</div>
+					<div class='col-span-4 md:col-span-1'>
+						<TextField
+							id='surname'
+							label='Surname'
+							placeholder='Enter surname...'
+							autocomplete='family-name'
+							required
+						/>
+					</div>
+					<div class='col-span-4 md:col-span-1'>
+						<TextField
+							id='email'
+							type='email'
+							label='Email'
+							placeholder='Enter email...'
+							autocomplete='email'
+							required
+						/>
+					</div>
+
+					<div class='col-span-4 md:col-span-1'>
+						<TextField
+							id='phone'
+							type='tel'
+							label='Phone'
+							placeholder='Contact number...'
+							autocomplete='tel'
+							required
+						/>
+					</div>
+
+					<div class='col-span-4'>
+						<TextField id='message' label='Message' placeholder='Enter message...' value='' required rows={4} />
+					</div>
+				</div>
+
+				<div class='pt-6'>
+					<Button variant='dark' type='submit'>Submit</Button>
+				</div>
+
+				<div class='text-sm pt-2'>
+					This site is protected by reCAPTCHA and the Google
+					{' '}<a href='https://policies.google.com/privacy' target='_blank' rel='noopener noreferrer' class='underline'
+						>Privacy Policy</a
+					>{' '}
+					and
+					{' '}<a href='https://policies.google.com/terms' target='_blank' rel='noopener noreferrer' class='underline'
+						>Terms of Service</a
+					>{' '}
+					apply.
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+
+<script>
+	const form = document.getElementById('contact-form') as HTMLFormElement;
+	const container = document.getElementById('form-container');
+	const submitBtn = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+
+		if (submitBtn) {
+			submitBtn.disabled = true;
+			submitBtn.innerText = 'Sending...';
+		}
+
+		const formData = new FormData(form);
+
+		try {
+			const response = await fetch('/api/send-email', {
+				method: 'POST',
+				body: formData,
+			});
+
+			if (response.ok) {
+				if (container) {
+					container.innerHTML = `
+            <div class="py-10 text-center animate-in fade-in zoom-in duration-500">
+              <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-green-100 text-green-600 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold text-heading mb-2">Message Sent!</h2>
+              <p class="text-body">Thanks for reaching out. We'll get back to you shortly.</p>
+              <button onclick="window.location.reload()" class="mt-6 text-sm underline text-secondary-600">Send another message</button>
+            </div>
+          `;
+				}
+			} else {
+				throw new Error('Failed to send');
+			}
+		} catch (err) {
+			if (container) {
+				container.innerHTML =
+					`<div class="py-4 text-center text-red-600">Something went wrong. Please try again.</div>` +
+					container.innerHTML;
+			}
+
+			if (submitBtn) {
+				submitBtn.disabled = false;
+				submitBtn.innerText = 'Submit';
+			}
+		}
+	});
+</script>

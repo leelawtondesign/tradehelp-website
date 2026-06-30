@@ -1,0 +1,15 @@
+---
+const { variant = 'light', id, fullWidth } = Astro.props;
+---
+
+<button
+	id={id}
+	class={`px-8 py-2.5 rounded-sm font-normal transition-colors text-sm duration-300 cursor-pointer
+	${fullWidth && 'w-full'}
+	${
+		variant === 'dark'
+			? 'bg-tradehelp-cyan text-white hover:brightness-110'
+			: 'bg-white text-tradehelp-cyan border hover:bg-gray-300'
+	}`}>
+	<slot />
+</button>

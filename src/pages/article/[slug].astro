@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { PortableText } from 'astro-portabletext';
+import SearchHero from '../../components/SearchHero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadQuery } from '../../sanity/lib/load-query';
+
+interface HelpArticle {
+	title: string;
+	summary?: string;
+	content: any;
+	_updatedAt: string;
+	category?: {
+		title: string;
+		slug: string;
+	};
+}
+
+export async function getStaticPaths() {
+  const SLUGS_QUERY = `*[_type == "helpArticle" && defined(slug.current)]{
+    "params": {"slug": slug.current}
+  }`;
+
+  const { data } = await loadQuery<any[]>({ query: SLUGS_QUERY });
+  return data;
+}
+
+const POST_QUERY = `*[_type == "helpArticle" && slug.current == $slug][0]{
+  ...,
+  _updatedAt,
+  category->{
+    title,
+    "slug": slug.current
+  }
+}`;
+
+const { data: article } = await loadQuery<HelpArticle>({
+	query: POST_QUERY,
+	params: Astro.params,
+});
+
+if (!article) {
+	return Astro.redirect('/404');
+}
+
+const lastUpdated = article._updatedAt
+	? new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+		}).format(new Date(article._updatedAt))
+	: 'Recently';
+
+const breadcrumbCategory = article.category
+	? {
+			name: article.category.title,
+			href: `/${article.category.slug}`,
+		}
+	: undefined;
+---
+
+<Layout title={article?.title || 'Legal Page'} description={'SITE_DESCRIPTION'}>
+	<SearchHero heading='How can we help?' />
+
+	<section class='py-20'>
+		<div class='content-wrapper'>
+			<article class='max-w-180 mx-auto'>
+				<Breadcrumbs category={breadcrumbCategory} currentTitle={article.title} />
+
+				<h1 class='text-4xl font-bold mb-4'>{article.title}</h1>
+
+				<div class='flex items-center text-sm text-secondary-400 mb-8'>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						class='h-4 w-4 mr-1.5'
+						fill='none'
+						viewBox='0 0 24 24'
+						stroke='currentColor'>
+						<path
+							stroke-linecap='round'
+							stroke-linejoin='round'
+							stroke-width='2'
+							d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'></path>
+					</svg>
+					<span>Last updated on {lastUpdated}</span>
+				</div>
+
+				<div class='prose max-w-none prose-slate prose-headings:text-secondary-900'>
+					{article.content && <PortableText value={article.content} />}
+				</div>
+			</article>
+		</div>
+	</section>
+</Layout>

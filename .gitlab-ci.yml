@@ -1,0 +1,247 @@
+include:
+  - template: 'Security/SAST.gitlab-ci.yml'
+  - template: 'Security/Dependency-Scanning.gitlab-ci.yml'
+  - template: 'Security/Secret-Detection.gitlab-ci.yml'
+
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - test
+  - build_and_push
+  - review_prepare
+  - review
+  - stop
+  - deploy
+
+variables:
+  AST_ENABLE_MR_PIPELINES: "true"
+  REVIEW_NAMESPACE: public-review
+  FF_NETWORK_PER_BUILD: "true"
+
+build_push_jamstack:
+  stage: build_and_push
+  before_script:
+    - echo "$CONTAINER_PASS" | docker login -u "$CONTAINER_TOKEN" --password-stdin $CI_REGISTRY
+  script:
+    - export IMAGE_TAG="registry.gitlab.com/attaro1/thimgs/thhc:$(date +%Y%m%d-%H%M%S)"
+    - echo "IMAGE_TAG=${IMAGE_TAG}" >> deploy.env
+    - echo "K8S_CLEAN_SLUG=${K8S_CLEAN_SLUG}" >> deploy.env
+    - docker build --build-arg PUBLIC_SANITY_VISUAL_EDITING_ENABLED=false -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+  only:
+    - merge_requests
+    - main
+  artifacts:
+    reports:
+      dotenv: ./deploy.env
+      
+build_push_preview:
+  stage: build_and_push
+  before_script:
+    - echo "$CONTAINER_PASS" | docker login -u "$CONTAINER_TOKEN" --password-stdin $CI_REGISTRY
+  script:
+    - export IMAGE_TAG_PREVIEW="registry.gitlab.com/attaro1/thimgs/thhc:$(date +%Y%m%d-%H%M%S)-p"
+    - echo "K8S_CLEAN_SLUG=${K8S_CLEAN_SLUG}" >> deploy.env
+    - docker build --build-arg PUBLIC_SANITY_VISUAL_EDITING_ENABLED=true -t $IMAGE_TAG_PREVIEW .
+    - docker push $IMAGE_TAG_PREVIEW
+  only:
+    - main
+  artifacts:
+    reports:
+      dotenv: ./deploy.env
+      
+      
+review_prepare:
+  stage: review_prepare
+  needs:
+    - build_push_jamstack
+  image: alpine:latest
+  dependencies:
+    - build_push_jamstack
+  before_script:
+    - mkdir -p /var/lib/apt/lists/partial
+    - apk add --no-cache curl ca-certificates bash git
+    - curl -LO "https://dl.k8s.io/release/v1.33.1/bin/linux/amd64/kubectl"
+    - chmod +x kubectl
+    - mv kubectl /usr/local/bin/
+    - kubectl version --client
+    #yq
+    - curl -L https://github.com/mikefarah/yq/releases/download/v4.16.2/yq_linux_amd64 -o /usr/bin/yq
+    - chmod +x /usr/bin/yq
+    - yq --version
+  script:
+    - export K8S_CLEAN_SLUG=thhc-$(echo $CI_COMMIT_REF_SLUG | sed 's/[^a-z0-9\-]//g' | cut -c 1-48 | sed 's/-*$//')
+    - echo "K8S_CLEAN_SLUG=${K8S_CLEAN_SLUG}" >> deploy.env
+    - export APP_SERVICE="$K8S_CLEAN_SLUG"
+    - echo "APP_SERVICE=${APP_SERVICE}" >> deploy.env
+    - export REVIEW_APP_URL=https://$APP_SERVICE.review.tradehelp.co.uk
+    - echo "REVIEW_APP_URL=${REVIEW_APP_URL}" >> deploy.env
+    - git clone "https://oauth2:${CI_PLATFORM_TOKEN}@gitlab.com/attaro1/tradehelp/gitops/tradehelpplatform.git"
+
+    - cd tradehelpplatform/applications/overlays/public
+    - kubectl kustomize . | yq eval 'select(.kind == "Deployment" and .metadata.name == "thhc")' - > new-deployment.yaml
+    - kubectl kustomize . | yq eval 'select(.kind == "Service" and .metadata.name == "thhc-service")' - > new-service.yaml
+    - kubectl kustomize . | yq eval 'select(.kind == "Ingress" and .metadata.name == "thhc-ingress")' - > new-ingress.yaml
+
+    - >
+      yq e ".metadata.labels.api = \"${APP_SERVICE}\" | 
+      .metadata.name = \"${APP_SERVICE}\" | 
+      .metadata.namespace = \"${REVIEW_NAMESPACE}\" |
+      .spec.selector.matchLabels.api=\"${APP_SERVICE}\" | 
+      .spec.template.metadata.labels.api=\"${APP_SERVICE}\" | 
+      .spec.template.metadata.name=\"${APP_SERVICE}\" | 
+      .spec.template.spec.containers[0].name=\"${APP_SERVICE}\" | 
+      .spec.template.spec.containers[0].image=\"${IMAGE_TAG}\"" new-deployment.yaml > deployment-manifest.yaml
+
+    - >
+      yq e ".metadata.labels.service = \"${APP_SERVICE}\" | 
+      .metadata.name = \"${APP_SERVICE}-service\" | 
+      .metadata.namespace = \"${REVIEW_NAMESPACE}\" |
+      .spec.selector.api=\"${APP_SERVICE}\"" new-service.yaml > service-manifest.yaml
+
+    - >
+      yq e ".metadata.name = \"${APP_SERVICE}-ingress\" |
+      .metadata.namespace = \"${REVIEW_NAMESPACE}\" |
+      .spec.tls[0].hosts[0]=\"${APP_SERVICE}.review.tradehelp.co.uk\" |  
+      .spec.tls[0].secretName = \"review-wildcard\" |
+      .spec.rules[0].host=\"${APP_SERVICE}.review.tradehelp.co.uk\" | 
+      .spec.rules[0].http.paths[0].backend.service.name = \"${APP_SERVICE}-service\"" new-ingress.yaml > ingress-manifest.yaml
+    - cp deployment-manifest.yaml ingress-manifest.yaml service-manifest.yaml $CI_PROJECT_DIR/
+  artifacts:
+    paths:
+      - deployment-manifest.yaml
+      - ingress-manifest.yaml
+      - service-manifest.yaml
+    reports:
+      dotenv: ./deploy.env
+  only:
+    - merge_requests
+
+review:
+  stage: review
+  image:
+    name: bitnamilegacy/kubectl:latest
+    entrypoint: ['']
+  needs:
+    - build_push_jamstack
+    - review_prepare
+  script:
+    - echo $TEMP_VAR | base64 -d > kubeconfig
+    - export KUBECONFIG=kubeconfig
+    - kubectl apply -f deployment-manifest.yaml --namespace $REVIEW_NAMESPACE
+    - kubectl apply -f service-manifest.yaml --namespace $REVIEW_NAMESPACE
+    - kubectl apply -f ingress-manifest.yaml --namespace $REVIEW_NAMESPACE
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: $REVIEW_APP_URL
+    on_stop: stop_review
+    auto_stop_in: 1 week
+  only:
+    - merge_requests
+  allow_failure: true
+
+stop_review:
+  stage: stop
+  image:
+    name: bitnamilegacy/kubectl:latest
+    entrypoint: ['']
+  script:
+    - echo $TEMP_VAR | base64 -d > kubeconfig
+    - export KUBECONFIG=kubeconfig
+    - kubectl delete -f deployment-manifest.yaml --namespace $REVIEW_NAMESPACE
+    - kubectl delete -f service-manifest.yaml --namespace $REVIEW_NAMESPACE
+    - kubectl delete -f ingress-manifest.yaml --namespace $REVIEW_NAMESPACE
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+      allow_failure: true
+
+stop_review_on_merge:
+  stage: stop
+  image:
+    name: bitnamilegacy/kubectl:latest
+    entrypoint: ['']
+  script:
+    - echo $TEMP_VAR | base64 -d > kubeconfig
+    - export KUBECONFIG=kubeconfig
+    - kubectl delete -f deployment-manifest.yaml --namespace $REVIEW_NAMESPACE
+    - kubectl delete -f service-manifest.yaml --namespace $REVIEW_NAMESPACE
+    - kubectl delete -f ingress-manifest.yaml --namespace $REVIEW_NAMESPACE
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+      
+deploy_public_jamstack:
+  stage: deploy
+  image: debian:latest
+  before_script:
+    - mkdir -p /var/lib/apt/lists/partial
+    - apt-get update -y && apt-get install -y curl git
+  dependencies:
+    - build_push_jamstack
+  needs:
+    - build_push_jamstack
+  script:
+    - K8S_CLEAN_SLUG=$(echo $CI_COMMIT_REF_SLUG | sed 's/[^a-z0-9\-]//g' | cut -c 1-63)
+    - APP_SERVICE="ofc-$K8S_CLEAN_SLUG"
+    - curl -L https://github.com/mikefarah/yq/releases/download/v4.16.2/yq_linux_amd64 -o /usr/bin/yq
+    - chmod +x /usr/bin/yq
+    - yq --version
+    - git clone "https://oauth2:${CI_PLATFORM_TOKEN}@gitlab.com/attaro1/tradehelp/gitops/tradehelpplatform.git"
+    - cd tradehelpplatform
+    - cat applications/base/thhc/deployment.yaml
+    - yq e '.spec.template.spec.containers[0].image = "'"${IMAGE_TAG}"'"' -i applications/base/thhc/deployment.yaml
+    - git add applications/base/thhc/deployment.yaml
+    - git status
+    - git config user.email "developer@attaro.co.uk"
+    - git config user.name "thhc CICD"
+    - git commit -am "Automated commit by thhc Pipeline to public. Pipeline ID ${CI_PIPELINE_ID}"
+    - git push
+  only:
+    - main
+  environment:
+    name: public
+    
+deploy_public_preview:
+  stage: deploy
+  image: debian:latest
+  before_script:
+    - mkdir -p /var/lib/apt/lists/partial
+    - apt-get update -y && apt-get install -y curl git
+  dependencies:
+    - build_push_preview
+  needs:
+    - build_push_preview
+  script:
+    - K8S_CLEAN_SLUG=$(echo $CI_COMMIT_REF_SLUG | sed 's/[^a-z0-9\-]//g' | cut -c 1-63)
+    - APP_SERVICE="ofc-$K8S_CLEAN_SLUG"
+    - curl -L https://github.com/mikefarah/yq/releases/download/v4.16.2/yq_linux_amd64 -o /usr/bin/yq
+    - chmod +x /usr/bin/yq
+    - yq --version
+    - git clone "https://oauth2:${CI_PLATFORM_TOKEN}@gitlab.com/attaro1/tradehelp/gitops/tradehelpplatform.git"
+    - cd tradehelpplatform
+    - cat applications/base/thhc-p/deployment.yaml
+    - yq e '.spec.template.spec.containers[0].image = "'"${IMAGE_TAG_PREVIEW}"'"' -i applications/base/thhc-p/deployment.yaml
+    - git add applications/base/thhc-p/deployment.yaml
+    - git status
+    - git config user.email "developer@attaro.co.uk"
+    - git config user.name "thhc-p CICD"
+    - git commit -am "Automated commit by thhc-p Pipeline to public. Pipeline ID ${CI_PIPELINE_ID}"
+    - git push
+  only:
+    - main
+  environment:
+    name: public-review

@@ -1,0 +1,60 @@
+---
+export const prerender = false;
+
+import Layout from '../layouts/Layout.astro';
+import BlankLayout from '../layouts/BlankLayout.astro';
+import { PortableText } from 'astro-portabletext';
+import { loadQuery } from '../sanity/lib/load-query';
+
+const { slug = '' } = Astro.params;
+
+const result = await loadQuery<any>({
+	query: `*[_type == "legalPage" && slug.current == $slug][0]`,
+	params: { slug },
+});
+
+const page = result?.data || result;
+
+if (!page || !page._id) {
+	return Astro.redirect('/404');
+}
+
+const isEmbedded = Astro.url.searchParams.get('embed') === 'true';
+
+const Wrapper = isEmbedded ? BlankLayout : Layout;
+---
+
+<Wrapper title={page.title} description={page.description || 'Legal Page'}>
+	{
+		!isEmbedded && (
+			<section class='bg-secondary-600'>
+				<div class='content-wrapper flex items-center pt-25 pb-15 text-white'>
+					<h1 class='text-4xl font-bold'>{page.title}</h1>
+				</div>
+			</section>
+		)
+	}
+
+	<section class='py-10 md:py-20'>
+		<div class='content-wrapper prose max-w-none'>
+			{isEmbedded && <h1 class='text-3xl font-bold mb-8'>{page.title}</h1>}
+			{page.content ? <PortableText value={page.content} /> : <p>No content available.</p>}
+		</div>
+	</section>
+
+	<script is:inline>
+		const sendHeight = () => {
+			const height = document.documentElement.scrollHeight;
+			const target = window.parent;
+			if (target) {
+				target.postMessage({ type: 'setHeight', height }, '*');
+			}
+		};
+		window.addEventListener('load', sendHeight);
+		window.addEventListener('resize', sendHeight);
+		new MutationObserver(sendHeight).observe(document.body, {
+			subtree: true,
+			childList: true,
+		});
+	</script>
+</Wrapper>

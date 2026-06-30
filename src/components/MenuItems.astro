@@ -1,0 +1,11 @@
+---
+const { mobile = false } = Astro.props;
+const linkClass = mobile
+	? 'text-2xl font-medium text-text-primary hover:text-tradehelp-cyan transition-colors'
+	: 'text-sm font-normal text-text-primary hover:text-tradehelp-cyan transition-colors tracking-[0.75px]';
+---
+
+<a href='/software' class={linkClass}>Software</a>
+<a href='/offers-savings' class={linkClass}>Offers &amp; Savings</a>
+<a href='/customer-finance' class={linkClass}>Customer Finance</a>
+<a href='/pricing' class={linkClass}>Pricing</a>
