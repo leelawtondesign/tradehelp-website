@@ -1,0 +1,56 @@
+---
+import Badge from './Badge.astro';
+
+interface Props {
+	title: string;
+	summary?: string;
+	articleDate?: string;
+	imageUrl?: string;
+	slug: string;
+}
+
+const { title, summary, articleDate, imageUrl, slug } = Astro.props;
+
+const formattedDate = articleDate
+	? new Date(articleDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+	: null;
+
+const optimisedImage = imageUrl ? `${imageUrl}?w=800&h=480&fit=crop&auto=format` : null;
+---
+
+<a href={`/news/${slug}`} class='news-card card group block overflow-hidden'>
+	{optimisedImage && (
+		<div class='aspect-[16/9] overflow-hidden'>
+			<img
+				src={optimisedImage}
+				alt={title}
+				width='800'
+				height='450'
+				decoding='async'
+				loading='lazy'
+				class='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+			/>
+		</div>
+	)}
+
+	<div class='p-6 flex flex-col gap-3'>
+		<div class='flex items-center gap-3'>
+			<Badge text='News' color='cyan' surface='light' />
+			{formattedDate && <span class='text-text-secondary text-sm'>{formattedDate}</span>}
+		</div>
+
+		<h5 class='text-text-primary group-hover:text-tradehelp-cyan transition-colors'>{title}</h5>
+
+		{summary && <p class='text-text-secondary text-sm line-clamp-3'>{summary}</p>}
+	</div>
+</a>
+
+<style>
+	.news-card {
+		transition: box-shadow 0.2s ease, transform 0.2s ease;
+	}
+	.news-card:hover {
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+		transform: translateY(-2px);
+	}
+</style>

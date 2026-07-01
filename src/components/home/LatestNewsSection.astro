@@ -1,0 +1,49 @@
+---
+import { loadQuery } from '../../sanity/lib/load-query';
+import NewsCard from '../NewsCard.astro';
+
+interface Article {
+	_id: string;
+	title: string;
+	summary?: string;
+	articleDate?: string;
+	slug: string;
+	imageUrl?: string;
+}
+
+const { data: articles } = await loadQuery<Article[]>({
+	query: `*[_type == "newsArticle" && !(_id in path("drafts.**"))] | order(articleDate desc) [0...3] {
+		_id,
+		title,
+		summary,
+		articleDate,
+		"slug": slug.current,
+		"imageUrl": featureImage.asset->url
+	}`,
+});
+
+const safeArticles = articles ?? [];
+---
+
+{safeArticles.length > 0 && (
+	<section class='content-wrapper py-15 md:py-20'>
+		<div class='mb-10'>
+			<p class='uppercase-tag text-tradehelp-cyan pb-3'>Latest News & Offers</p>
+			<h3 class='text-text-primary'>What's new</h3>
+		</div>
+
+		<div class='grid grid-cols-12 gap-5'>
+			{safeArticles.map((article) => (
+				<div class='col-span-12 md:col-span-4'>
+					<NewsCard
+						title={article.title}
+						summary={article.summary}
+						articleDate={article.articleDate}
+						imageUrl={article.imageUrl}
+						slug={article.slug}
+					/>
+				</div>
+			))}
+		</div>
+	</section>
+)}
