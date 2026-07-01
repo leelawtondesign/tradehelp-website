@@ -3,13 +3,14 @@ import { ArrowRight } from '@lucide/astro';
 
 interface Props {
 	text?: string;
+	ariaLabel?: string;
 	color?: 'cyan' | 'yellow' | 'magenta' | 'green' | 'navy' | 'buytrade' | 'white';
 	underline?: boolean;
 	href?: string;
 	class?: string;
 }
 
-const { text = 'Learn More', color = 'cyan', underline = false, href, class: className = '' } = Astro.props;
+const { text = 'Learn More', ariaLabel, color = 'cyan', underline = false, href, class: className = '' } = Astro.props;
 
 const colorMap = {
 	cyan: 'var(--color-tradehelp-cyan)',
@@ -27,6 +28,7 @@ const Tag = href ? 'a' : 'span';
 
 <Tag
 	href={href}
+	aria-label={ariaLabel}
 	class={`inline-flex items-center gap-1 text-xs font-medium uppercase group-hover:gap-2 transition-all duration-200 ${underline ? 'pb-1 border-b' : ''} ${className}`}
 	style={`color: ${hex}; ${underline ? `border-color: ${hex}` : ''}`}>
 	{text} <ArrowRight size={14} />

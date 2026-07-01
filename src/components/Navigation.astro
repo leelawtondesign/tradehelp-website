@@ -14,9 +14,9 @@ const isHome = Astro.url.pathname === '/';
 <nav id='userNav' class='top-0 z-50 w-full bg-white transition-colors duration-300 print:hidden'>
 	<div class='pt-5 pb-3 border-b border-grey-100 text-[0.6rem] sm:text-xs font-normal uppercase text-text-primary tracking-wide'>
 		<div class='px-7 lg:px-12 flex items-center justify-end gap-4 md:gap-6'>
-			<a class='text-text-primary hover:text-tradehelp-cyan'>Trades</a>
-			<a class='text-text-primary hover:text-tradehelp-cyan'>Homeowners</a>
-			<a class='text-text-primary hover:text-tradehelp-cyan'>Procurement & Consultancy</a>
+			<a href='/trades' class='text-text-primary hover:text-tradehelp-cyan'>Trades</a>
+			<a href='/homeowners' class='text-text-primary hover:text-tradehelp-cyan'>Homeowners</a>
+			<a href='/procurement-consultancy' class='text-text-primary hover:text-tradehelp-cyan'>Procurement &amp; Consultancy</a>
 		</div>
 	</div>
 </nav>
