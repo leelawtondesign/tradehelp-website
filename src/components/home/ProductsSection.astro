@@ -4,10 +4,15 @@ import Software from '../../assets/home/software.png';
 import BuyTrade from '../../assets/home/buytrade.png';
 import OffersSavings from '../../assets/home/offersSavings.png';
 import CustomerFinance from '../../assets/home/customerFinance.png';
+import SoftwareOverlay from '../../assets/home/software_overlay.svg';
+import BuyTradeOverlay from '../../assets/home/buytrade_overlay.svg';
+import OffersSavingsOverlay from '../../assets/home/offersSavings_overlay.svg';
+import CustomerFinanceOverlay from '../../assets/home/customerFinance_overlay.svg';
+import { Image } from 'astro:assets';
 ---
 
 <section class='content-wrapper py-15'>
-	<div class='grid grid-cols-12 md:gap-y-20'>
+	<div class='grid grid-cols-12 md:gap-y-15'>
 		<ProductSection
 			badgeText='TradeHelp Software'
 			heading='Run your business from one app.'
@@ -15,8 +20,9 @@ import CustomerFinance from '../../assets/home/customerFinance.png';
 			href='/software'
 			color='cyan'
 			image={Software}
-			imageAlt='TradeHelp Software'
-		/>
+			imageAlt='TradeHelp Software'>
+			<Image src={SoftwareOverlay} alt={''} loading='lazy' class='w-10/12 absolute left-0 bottom-0 z-10 -ml-1 -mb-1' />
+		</ProductSection>
 
 		<ProductSection
 			badgeText='BuyTrade'
@@ -26,8 +32,9 @@ import CustomerFinance from '../../assets/home/customerFinance.png';
 			color='buytrade'
 			image={BuyTrade}
 			imageAlt='BuyTrade Platform'
-			imageRight={false}
-		/>
+			imageRight={false}>
+			<Image src={BuyTradeOverlay} alt={''} loading='lazy' class='h-10/12 w-auto absolute right-0 bottom-0 z-10 object-bottom-right -mr-1 -mb-1' />
+		</ProductSection>
 
 		<ProductSection
 			badgeText='Offers & Savings'
@@ -36,8 +43,14 @@ import CustomerFinance from '../../assets/home/customerFinance.png';
 			href='/offers-savings'
 			color='yellow'
 			image={OffersSavings}
-			imageAlt='Offers & Savings'
-		/>
+			imageAlt='Offers & Savings'>
+			<Image
+				src={OffersSavingsOverlay}
+				alt={''}
+				loading='lazy'
+				class='h-7/12 w-auto absolute left-0 bottom-0 z-10 -ml-1 -mb-1'
+			/>
+		</ProductSection>
 
 		<ProductSection
 			badgeText='Customer Finance'
@@ -47,7 +60,13 @@ import CustomerFinance from '../../assets/home/customerFinance.png';
 			color='magenta'
 			image={CustomerFinance}
 			imageAlt='Customer Finance'
-			imageRight={false}
-		/>
+			imageRight={false}>
+			<Image
+				src={CustomerFinanceOverlay}
+				alt={''}
+				loading='lazy'
+				class='h-8/12 w-auto absolute right-0 bottom-0 z-10 -mr-1 -mb-1'
+			/>
+		</ProductSection>
 	</div>
 </section>

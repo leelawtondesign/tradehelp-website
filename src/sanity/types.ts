@@ -376,6 +376,7 @@ export type SiteSettings = {
   address?: string
   phone?: string
   email?: string
+  installerTotal?: number
 }
 
 export type TableRow = {

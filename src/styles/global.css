@@ -98,6 +98,19 @@ svg.lucide {
 	--color-tradehelp-buytrade: #113C84;
 
 	--color-light-grey-bg: #F3F8FB;
+
+	--background-image-gradient-blue: linear-gradient(135deg,
+			#0083B0 0%,
+			#00B4DB 100%);
+
+	--background-image-gradient-green: linear-gradient(135deg,
+			#97D86B 0%,
+			#73C040 100%);
+
+	--background-image-gradient-pink: linear-gradient(135deg,
+			#B91D73 0%,
+			#F953C6 100%);
+
 }
 
 @layer base {
@@ -113,7 +126,7 @@ svg.lucide {
 	}
 
 	h1 {
-		@apply text-5xl lg:text-[4rem] lg:leading-18;
+		@apply text-5xl lg:text-[4rem] lg:leading-18 font-bold;
 	}
 
 	h2 {
@@ -128,7 +141,7 @@ svg.lucide {
 		@apply text-2xl/9 md:text-[1.75rem] md:leading-normal;
 	}
 
-		h5 {
+	h5 {
 		@apply text-xl md:text-xl;
 	}
 

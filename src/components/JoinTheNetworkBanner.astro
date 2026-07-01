@@ -1,0 +1,30 @@
+---
+import Button from './Button.astro';
+import { loadQuery } from '../sanity/lib/load-query';
+import Arrow from './Arrow.astro';
+
+const { data: settings } = await loadQuery<{ installerTotal?: number }>({
+	query: `*[_type == "siteSettings"][0]{ installerTotal }`,
+});
+const installerTotal = settings?.installerTotal ? settings.installerTotal.toLocaleString('en-GB') : '23,000';
+---
+
+<section class='bg-gradient-blue mx-4 md:mx-5 rounded-4xl relative overflow-hidden'>
+	<div class='content-wrapper relative z-10 py-15 px-5'>
+		<div
+			class='text-center col-span-12 md:col-span-6 text-white hero-content flex flex-col items-center justify-center gap-3'>
+			<div class='uppercase-tag'>Join the Network</div>
+			<h3>{installerTotal}+ UK installers can't be wrong.</h3>
+
+			<p class='text-md md:text-lg text-center font-normal max-w-170 mb-5'>
+				Membership is free, takes 60 seconds, and gives you access to the software, savings and finance that grow trade
+				businesses.
+			</p>
+
+			<div class='relative'>
+				<Button>Create your FREE account</Button>
+				<Arrow which={4} class='absolute -bottom-2 -left-24 w-16 text-white' />
+			</div>
+		</div>
+	</div>
+</section>

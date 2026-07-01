@@ -5,13 +5,23 @@ import { Image } from 'astro:assets';
 import Rocket from '../../assets/home/rocket.png';
 import Engineer from '../../assets/home/hero_bg.png';
 import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
+import { loadQuery } from '../../sanity/lib/load-query';
+
+const { data: settings } = await loadQuery<{ installerTotal?: number }>({
+	query: `*[_type == "siteSettings"][0]{ installerTotal }`,
+});
+const installerTotal = settings?.installerTotal
+	? settings.installerTotal.toLocaleString('en-GB')
+	: '23,000';
+	console.log("settings:", settings)
+import TrustpilotInverse from '../../assets/home/trustpilot_excellent_inverse.svg';
 ---
 
 <section class='bg-[#001F2E] mx-4 md:mx-5 rounded-4xl relative overflow-hidden'>
 	<div class='content-wrapper relative z-10 pt-15 pb-0 md:py-30'>
 		<div
 			class='text-center md:text-left col-span-12 md:col-span-6 text-white hero-content flex flex-col items-center md:items-start gap-3 md:w-1/2'>
-			<Badge text='Trusted by 23,000 Tradespeople' class='uppercase' />
+			<Badge text={`Trusted by ${installerTotal}+ Tradespeople`} class='uppercase' />
 
 			<h1><span class='text-tradehelp-cyan'>Boost </span>your business.</h1>
 
@@ -20,8 +30,9 @@ import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
 				customer finance, all in one place.
 			</p>
 
-			<div class='flex gap-3 pt-6 mx-auto md:ml-0'>
+			<div class='flex gap-5 pt-6 mx-auto md:ml-0'>
 				<Button>Get started - it's FREE</Button>
+				<Image src={TrustpilotInverse} alt='' class='w-full max-w-50' />
 			</div>
 		</div>
 

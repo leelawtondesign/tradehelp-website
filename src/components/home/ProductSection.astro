@@ -19,15 +19,23 @@ const { badgeText, heading, body, href, color, image, imageAlt, imageRight = tru
 ---
 
 <div
-	class='col-span-12 md:col-span-6 card px-6 pt-10 pb-12 md:px-16 md:py-14 md:min-h-100 flex flex-col justify-between items-start'>
+	class='col-span-12 md:col-span-6 card px-6 pt-10 pb-12 md:px-16 md:py-14 flex flex-col justify-between items-start'>
 	<div class='flex flex-col items-start justify-start gap-3'>
 		<Badge color={color} surface='light' text={badgeText} />
-		<h4 class='max-w-75 mt-2'>{heading}</h4>
-		<p class='text-text-secondary text-sm/6'>{body}</p>
+		<h4 class='max-w-85 mt-2'>{heading}</h4>
+		<p class='text-text-secondary text-sm/6 md:text-base'>{body}</p>
 	</div>
-	<LinkArrow text='Learn More' ariaLabel={`Learn more about ${badgeText}`} color={color} class='mt-auto pt-8' underline href={href} />
+	<LinkArrow
+		text='Learn More'
+		ariaLabel={`Learn more about ${badgeText}`}
+		color={color}
+		class='mt-auto pt-8'
+		underline
+		href={href}
+	/>
 </div>
 
-<div class='col-span-12 md:col-span-6 rounded-2xl overflow-hidden mb-10 md:mb-0'>
-	<Image src={image} alt={imageAlt} width={540} quality={85} loading='lazy' class='w-full h-full object-fill' />
+<div class='col-span-12 md:col-span-6 rounded-2xl overflow-hidden mb-10 md:mb-0 relative'>
+	<Image src={image} alt={imageAlt} width={600} quality={100} loading='lazy' class='w-full h-full object-cover block' />
+	<slot/>
 </div>
