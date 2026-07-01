@@ -1,13 +1,32 @@
 ---
 interface Props {
 	text?: string;
+	color?: 'cyan' | 'yellow' | 'magenta' | 'green' | 'navy' | 'buytrade' | 'white';
+	surface?: 'dark' | 'light';
+	class?: string;
 }
 
-const { text = 'Trusted by 23,000 UK Installers' } = Astro.props;
+const { text = 'Trusted by 23,000 UK Installers', color = 'white', surface = 'dark', class: className = '' } = Astro.props;
+
+const colorMap = {
+	cyan: 'var(--color-tradehelp-cyan)',
+	yellow: 'var(--color-tradehelp-yellow)',
+	magenta: 'var(--color-tradehelp-magenta)',
+	green: 'var(--color-tradehelp-green)',
+	navy: 'var(--color-tradehelp-navy)',
+	buytrade: 'var(--color-tradehelp-buytrade)',
+	white: '#fff',
+};
+
+const dotColor = colorMap[color];
+
+const surfaceBg = surface === 'light' ? `color-mix(in srgb, ${dotColor} 10%, transparent)` : 'rgba(255, 255, 255, 0.1)';
+const textColor = surface === 'light' ? dotColor : '#fff';
 ---
 
 <div
-	class='bg-white/10 -ml-1 py-2 px-4 uppercase text-white inline-flex items-center gap-1 text-sm font-normal rounded-full'>
-	<span class='w-1.5 h-1.5 bg-white rounded-full inline-block'></span>
+	class={`-ml-0.5 py-1.25 px-3 inline-flex items-center gap-1.25 text-sm font-normal rounded-full ${className}`}
+	style={`background-color: ${surfaceBg}; color: ${textColor}`}>
+	<span class='w-1.25 h-1.25 rounded-full inline-block' style={`background-color: ${dotColor}`}></span>
 	<span>{text}</span>
 </div>

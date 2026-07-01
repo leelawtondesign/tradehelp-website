@@ -108,7 +108,7 @@ svg.lucide {
 	h4,
 	h5,
 	h6 {
-		@apply font-bold;
+		@apply font-semibold;
 		margin: 0 0 0.5rem 0;
 	}
 
@@ -125,11 +125,11 @@ svg.lucide {
 	}
 
 	h4 {
-		@apply text-lg md:text-[1.75rem];
+		@apply text-2xl/9 md:text-[1.75rem] md:leading-normal;
 	}
 
 		h5 {
-		@apply text-lg md:text-xl;
+		@apply text-xl md:text-xl;
 	}
 
 
@@ -162,7 +162,7 @@ svg.lucide {
 	}
 
 	.card {
-		@apply bg-light-grey-bg border border-grey-50 rounded-lg;
+		@apply bg-light-grey-bg border border-grey-50 rounded-2xl;
 	}
 }
 
@@ -174,7 +174,6 @@ body {
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	font-size: 16px;
-	line-height: 1.7;
 	font-weight: 300;
 	color: var(--color-text-primary);
 }

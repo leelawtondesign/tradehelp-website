@@ -1,0 +1,53 @@
+---
+import ProductSection from './ProductSection.astro';
+import Software from '../../assets/home/software.png';
+import BuyTrade from '../../assets/home/buytrade.png';
+import OffersSavings from '../../assets/home/offersSavings.png';
+import CustomerFinance from '../../assets/home/customerFinance.png';
+---
+
+<section class='content-wrapper py-15'>
+	<div class='grid grid-cols-12 md:gap-y-20'>
+		<ProductSection
+			badgeText='TradeHelp Software'
+			heading='Run your business from one app.'
+			body='Save time and money with unlimited tools designed specifically for tradespeople.'
+			href='/software'
+			color='cyan'
+			image={Software}
+			imageAlt='TradeHelp Software'
+		/>
+
+		<ProductSection
+			badgeText='BuyTrade'
+			heading='Find and order heating products in seconds.'
+			body='Your one-stop-shop for plumbing & heating products from leading merchants.'
+			href='/buytrade'
+			color='buytrade'
+			image={BuyTrade}
+			imageAlt='BuyTrade Platform'
+			imageRight={false}
+		/>
+
+		<ProductSection
+			badgeText='Offers & Savings'
+			heading='Saving you money on products you already buy.'
+			body='Using the combined buying power of our network to negotiate special offers and improved purchasing terms on your behalf.'
+			href='/offers-savings'
+			color='yellow'
+			image={OffersSavings}
+			imageAlt='Offers & Savings'
+		/>
+
+		<ProductSection
+			badgeText='Customer Finance'
+			heading='Help customers say yes to bigger jobs.'
+			body='Become a TradeHelp Introducer Appointed Representative and win more business.'
+			href='/customer-finance'
+			color='magenta'
+			image={CustomerFinance}
+			imageAlt='Customer Finance'
+			imageRight={false}
+		/>
+	</div>
+</section>

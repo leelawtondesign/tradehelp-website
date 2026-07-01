@@ -1,0 +1,33 @@
+---
+import { ArrowRight } from '@lucide/astro';
+
+interface Props {
+	text?: string;
+	color?: 'cyan' | 'yellow' | 'magenta' | 'green' | 'navy' | 'buytrade' | 'white';
+	underline?: boolean;
+	href?: string;
+	class?: string;
+}
+
+const { text = 'Learn More', color = 'cyan', underline = false, href, class: className = '' } = Astro.props;
+
+const colorMap = {
+	cyan: 'var(--color-tradehelp-cyan)',
+	yellow: 'var(--color-tradehelp-yellow)',
+	magenta: 'var(--color-tradehelp-magenta)',
+	green: 'var(--color-tradehelp-green)',
+	navy: 'var(--color-tradehelp-navy)',
+	buytrade: 'var(--color-tradehelp-buytrade)',
+	white: '#fff',
+};
+
+const hex = colorMap[color];
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag
+	href={href}
+	class={`inline-flex items-center gap-1 text-xs font-medium uppercase group-hover:gap-2 transition-all duration-200 ${underline ? 'pb-1 border-b' : ''} ${className}`}
+	style={`color: ${hex}; ${underline ? `border-color: ${hex}` : ''}`}>
+	{text} <ArrowRight size={14} />
+</Tag>

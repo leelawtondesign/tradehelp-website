@@ -1,5 +1,5 @@
 ---
-import { ArrowRight } from '@lucide/astro';
+import LinkArrow from './LinkArrow.astro';
 
 interface Props {
 	title: string;
@@ -24,20 +24,16 @@ const hex = colorMap[color];
 
 <a
 	href={href}
-	class='card px-5 py-8 flex flex-col gap-2 group transition-all duration-300 hover:shadow-lg hover:-translate-y-1'>
+	class='card px-5 py-8 flex flex-col gap-2 group transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full'>
 	<div
 		class='inline-flex rounded-xl p-2 items-center justify-center text-white self-start mb-2'
 		style={`background-color: ${hex}`}>
 		<slot />
 	</div>
 
-	<h5 class="text-text-primary">{title}</h5>
+	<h5 class='text-text-primary'>{title}</h5>
 
 	<p class='text-text-secondary text-sm'>{description}</p>
 
-	<span
-		class='inline-flex items-center gap-1 text-xs font-medium mt-auto pt-2 group-hover:gap-2 transition-all duration-200 uppercase'
-		style={`color: ${hex}`}>
-		Learn More <ArrowRight size={14} />
-	</span>
+	<LinkArrow text='Learn More' color={color} class='mt-auto pt-2' />
 </a>

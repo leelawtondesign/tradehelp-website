@@ -1,0 +1,103 @@
+---
+import Badge from '../Badge.astro';
+import Button from '../Button.astro';
+import { Image } from 'astro:assets';
+import Rocket from '../../assets/home/rocket.png';
+import Engineer from '../../assets/home/hero_bg.png';
+import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
+---
+
+<section class='bg-[#001F2E] mx-4 md:mx-5 rounded-4xl relative overflow-hidden'>
+	<div class='content-wrapper relative z-10 pt-15 pb-0 md:py-30'>
+		<div
+			class='text-center md:text-left col-span-12 md:col-span-6 text-white hero-content flex flex-col items-center md:items-start gap-3 md:w-1/2'>
+			<Badge text='Trusted by 23,000 Tradespeople' class='uppercase' />
+
+			<h1><span class='text-tradehelp-cyan'>Boost </span>your business.</h1>
+
+			<p class='text-md md:text-lg text-center md:text-start font-normal max-w-115'>
+				TradeHelp is the UK's No.1 free network for tradespeople - professional software, exclusive buying power and
+				customer finance, all in one place.
+			</p>
+
+			<div class='flex gap-3 pt-6 mx-auto md:ml-0'>
+				<Button>Get started - it's FREE</Button>
+			</div>
+		</div>
+
+		<Image
+			alt=''
+			src={EngineerMobile}
+			class='hero-engineer md:hidden mt-10 w-4/5 -mr-6 ml-auto block object-bottom-right opacity-0'
+		/>
+	</div>
+
+	<Image
+		alt=''
+		src={Engineer}
+		class='hero-engineer hidden md:block absolute top-0 right-0 h-[70%] w-1/2 object-contain object-top-right pointer-events-none opacity-0'
+	/>
+	<Image
+		alt=''
+		src={Rocket}
+		class='hero-rocket absolute bottom-0 md:right-[8%] w-[70%] md:w-[50%] max-w-150 -ml-10 object-contain pointer-events-none z-20 opacity-0'
+	/>
+</section>
+
+<style is:global>
+	@keyframes fadeUp {
+		from {
+			opacity: 0;
+			transform: translateY(24px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.hero-content > * {
+		animation: fadeUp 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+	}
+
+	.hero-content > *:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+	.hero-content > *:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.hero-content > *:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+	.hero-content > *:nth-child(4) {
+		animation-delay: 0.4s;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.hero-engineer {
+		animation: fadeIn 0.8s ease-out 0.4s both;
+	}
+
+	@keyframes rocketIn {
+		from {
+			opacity: 0;
+			transform: translate(-40px, 40px);
+		}
+		to {
+			opacity: 1;
+			transform: translate(0, 0);
+		}
+	}
+
+	.hero-rocket {
+		animation: rocketIn 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) 0.6s both;
+	}
+</style>

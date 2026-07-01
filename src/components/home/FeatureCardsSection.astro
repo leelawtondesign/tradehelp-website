@@ -1,0 +1,53 @@
+---
+import FeatureCard from '../FeatureCard.astro';
+import { MapPin, Percent, PoundSterling, Smartphone } from '@lucide/astro';
+---
+
+<section class='content-wrapper py-15 grid grid-cols-12 gap-5'>
+	<div class='col-span-12 md:col-span-9'>
+		<p class='uppercase-tag text-tradehelp-cyan pb-2'>What's in it for you</p>
+		<h4>One free network, four tools.</h4>
+		<p class='text-text-secondary'>
+			TradeHelp was designed specifically for tradespeople, supporting you with the tools to manage and grow your
+			business.
+		</p>
+	</div>
+
+	<div class='col-span-12 grid grid-cols-12 gap-5 pt-4'>
+		<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+			<FeatureCard
+				title='TradeHelp Software'
+				description='A comprehensive free app for tradespeople to manage their day to day paperwork with PRO upgrade options.'
+				href='/software'>
+				<Smartphone size={22} />
+			</FeatureCard>
+		</div>
+		<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+			<FeatureCard
+				title='BuyTrade Platform'
+				description='The only multi-merchant online retail platform for heating and plumbing.'
+				href='/software'
+				color='buytrade'>
+				<MapPin size={22} />
+			</FeatureCard>
+		</div>
+		<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+			<FeatureCard
+				title='Offers & Savings'
+				description='Discounted merchant terms, manufacturer cash back and great deals on business essentials.'
+				href='/software'
+				color='yellow'>
+				<PoundSterling size={22} />
+			</FeatureCard>
+		</div>
+		<div class='col-span-12 md:col-span-6 lg:col-span-3'>
+			<FeatureCard
+				title='Customer Finance'
+				description='The ability to advertise and offer customer finance and win more business.'
+				href='/software'
+				color='magenta'>
+				<Percent size={22} />
+			</FeatureCard>
+		</div>
+	</div>
+</section>

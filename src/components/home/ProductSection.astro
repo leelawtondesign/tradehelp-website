@@ -1,0 +1,33 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Badge from '../Badge.astro';
+import LinkArrow from '../LinkArrow.astro';
+
+interface Props {
+	badgeText: string;
+	heading: string;
+	body: string;
+	href: string;
+	color: 'cyan' | 'yellow' | 'magenta' | 'green' | 'navy' | 'buytrade';
+	image: ImageMetadata;
+	imageAlt: string;
+	imageRight?: boolean;
+}
+
+const { badgeText, heading, body, href, color, image, imageAlt, imageRight = true } = Astro.props;
+---
+
+<div
+	class='col-span-12 md:col-span-6 card px-6 pt-10 pb-12 md:px-16 md:py-14 md:min-h-100 flex flex-col justify-between items-start'>
+	<div class='flex flex-col items-start justify-start gap-3'>
+		<Badge color={color} surface='light' text={badgeText} />
+		<h4 class='max-w-75 mt-2'>{heading}</h4>
+		<p class='text-text-secondary text-sm/6'>{body}</p>
+	</div>
+	<LinkArrow text='Learn More' color={color} class='mt-auto pt-8' underline href={href} />
+</div>
+
+<div class='col-span-12 md:col-span-6 rounded-2xl overflow-hidden mb-10 md:mb-0'>
+	<Image src={image} alt={imageAlt} class='w-full h-full object-fill' />
+</div>
