@@ -27,6 +27,9 @@ export default defineConfig({
 		}),
 		icon(),
 	],
+	image: {
+		domains: ['cdn.sanity.io'],
+	},
 	vite: {
 		plugins: [tailwindcss()],
 	},

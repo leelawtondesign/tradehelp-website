@@ -1,0 +1,134 @@
+---
+import Arrow from '../Arrow.astro';
+import { loadQuery } from '../../sanity/lib/load-query';
+import PartnerCard from '../PartnerCard.astro';
+
+interface Partner {
+	_id: string;
+	name: string;
+	logoUrl: string;
+	bgHex?: string;
+}
+
+const { data: grid } = await loadQuery<{ partners: Partner[] }>({
+	query: `*[_type == "partnersGrid" && !(_id in path("drafts.**"))][0]{
+		"partners": partners[]->{
+			_id,
+			name,
+			"logoUrl": logo.asset->url,
+			"bgHex": background.hex
+		}
+	}`,
+});
+
+const source = grid?.partners ?? [];
+
+const minItems = 20;
+const copies = source.length > 0 ? Math.max(2, Math.ceil(minItems / source.length)) : 2;
+let fill = Array.from({ length: copies }, () => source).flat();
+if (fill.length % 2 !== 0) fill = [...fill, fill[0]];
+
+const cardWidth = 204;
+const duration = Math.round((fill.length * cardWidth) / 30);
+---
+
+<section class='bg-light-grey-bg py-15 md:py-20 overflow-hidden'>
+	<div class='content-wrapper mb-10 text-center relative'>
+		<p class='uppercase-tag text-tradehelp-cyan pb-3'>Proud to partner with leading brands</p>
+		<div class='flex items-center justify-center gap-4'>
+			<span class='relative'>
+				<h3 class='text-text-primary'>Save money with our partners</h3>
+				<Arrow which={5} class='w-18 text-tradehelp-cyan hidden md:block shrink-0 mb-4 absolute -right-30 -top-2' />
+			</span>
+		</div>
+	</div>
+
+	<div class='content-wrapper'>
+		<div class='marquee-container'>
+			<!-- Row 1: right to left -->
+			<div class='marquee-track mb-3'>
+				<div class='marquee-row marquee-ltr' style={`animation-duration:${duration}s; animation-delay:0s;`}>
+					{fill.map((p) => <PartnerCard name={p.name} logoUrl={p.logoUrl} bgHex={p.bgHex} />)}
+					<span aria-hidden='true' class='contents'>
+						{fill.map((p) => <PartnerCard name={p.name} logoUrl={p.logoUrl} bgHex={p.bgHex} />)}
+					</span>
+				</div>
+			</div>
+
+			<!-- Row 2: left to right -->
+			<div class='marquee-track mb-3'>
+				<div
+					class='marquee-row marquee-rtl'
+					style={`animation-duration:${duration}s; animation-delay:-${Math.round(duration * 0.1)}s;`}>
+					{fill.map((p) => <PartnerCard name={p.name} logoUrl={p.logoUrl} bgHex={p.bgHex} />)}
+					<span aria-hidden='true' class='contents'>
+						{fill.map((p) => <PartnerCard name={p.name} logoUrl={p.logoUrl} bgHex={p.bgHex} />)}
+					</span>
+				</div>
+			</div>
+
+			<!-- Row 3: right to left -->
+			<div class='marquee-track'>
+				<div
+					class='marquee-row marquee-ltr'
+					style={`animation-duration:${duration}s; animation-delay:-${Math.round(duration * 0.44)}s;`}>
+					{fill.map((p) => <PartnerCard name={p.name} logoUrl={p.logoUrl} bgHex={p.bgHex} />)}
+					<span aria-hidden='true' class='contents'>
+						{fill.map((p) => <PartnerCard name={p.name} logoUrl={p.logoUrl} bgHex={p.bgHex} />)}
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.marquee-container {
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+		mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+	}
+
+	.marquee-track {
+		width: 100%;
+	}
+
+	.marquee-row {
+		display: flex;
+		gap: 12px;
+		width: max-content;
+	}
+
+	@keyframes marquee-ltr {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@keyframes marquee-rtl {
+		from {
+			transform: translateX(-50%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+
+	.marquee-ltr {
+		animation: marquee-ltr linear infinite;
+	}
+
+	.marquee-rtl {
+		animation: marquee-rtl linear infinite;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.marquee-ltr,
+		.marquee-rtl {
+			animation: none;
+		}
+	}
+</style>

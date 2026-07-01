@@ -1,0 +1,65 @@
+---
+interface Props {
+	name: string;
+	logoUrl: string;
+	bgHex?: string;
+}
+
+const { name, logoUrl, bgHex = '#F1F5F8' } = Astro.props;
+const optimisedUrl = logoUrl ? `${logoUrl}?w=56&auto=format` : '';
+---
+
+<div class='partner-card'>
+	<div class='hexagon-wrap'>
+		<div class='hexagon' style={`background:${bgHex};`}>
+			<img
+				src={optimisedUrl}
+				alt={name}
+				width='28'
+				height='28'
+				decoding='async'
+				loading='lazy'
+				class='object-contain w-7 h-7'
+			/>
+		</div>
+	</div>
+	<span class='text-text-primary font-medium text-sm whitespace-nowrap max-w-30 flex-1'>{name}</span>
+</div>
+
+<style>
+	.partner-card {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		background: white;
+		border: 1px solid var(--color-grey-100, #DDE8EF);
+		border-radius: 16px;
+		padding: 12px 20px;
+		flex-shrink: 0;
+		min-width: 180px;
+	}
+
+	.hexagon-wrap {
+		position: relative;
+		width: 45px;
+		height: 52px;
+		flex-shrink: 0;
+	}
+
+	.hexagon-wrap::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+		background: var(--color-grey-200, #B2CDDF);
+	}
+
+	.hexagon {
+		position: absolute;
+		inset: 1px;
+		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
