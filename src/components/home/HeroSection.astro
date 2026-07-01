@@ -29,6 +29,10 @@ import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
 			alt=''
 			src={EngineerMobile}
 			id='heroEngineerMobile'
+			width={250}
+			quality={100}
+			loading='eager'
+			fetchpriority='high'
 			class='md:hidden mt-10 w-4/5 -mr-6 ml-auto block object-bottom-right opacity-0'
 		/>
 	</div>
@@ -37,12 +41,19 @@ import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
 		alt=''
 		src={Engineer}
 		id='heroEngineer'
+		width={500}
+		quality={85}
+		loading='eager'
+		fetchpriority='high'
 		class='hidden md:block absolute top-0 right-0 h-[70%] w-1/2 object-contain object-top-right pointer-events-none opacity-0'
 	/>
 	<Image
 		alt=''
 		src={Rocket}
 		id='heroRocket'
+		width={600}
+		quality={100}
+		loading='eager'
 		class='absolute bottom-0 md:right-[8%] w-[70%] md:w-[50%] max-w-150 -ml-10 object-contain pointer-events-none z-20 opacity-0'
 	/>
 </section>
