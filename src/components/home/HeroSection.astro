@@ -28,19 +28,22 @@ import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
 		<Image
 			alt=''
 			src={EngineerMobile}
-			class='hero-engineer md:hidden mt-10 w-4/5 -mr-6 ml-auto block object-bottom-right opacity-0'
+			id='heroEngineerMobile'
+			class='md:hidden mt-10 w-4/5 -mr-6 ml-auto block object-bottom-right opacity-0'
 		/>
 	</div>
 
 	<Image
 		alt=''
 		src={Engineer}
-		class='hero-engineer hidden md:block absolute top-0 right-0 h-[70%] w-1/2 object-contain object-top-right pointer-events-none opacity-0'
+		id='heroEngineer'
+		class='hidden md:block absolute top-0 right-0 h-[70%] w-1/2 object-contain object-top-right pointer-events-none opacity-0'
 	/>
 	<Image
 		alt=''
 		src={Rocket}
-		class='hero-rocket absolute bottom-0 md:right-[8%] w-[70%] md:w-[50%] max-w-150 -ml-10 object-contain pointer-events-none z-20 opacity-0'
+		id='heroRocket'
+		class='absolute bottom-0 md:right-[8%] w-[70%] md:w-[50%] max-w-150 -ml-10 object-contain pointer-events-none z-20 opacity-0'
 	/>
 </section>
 
@@ -82,10 +85,6 @@ import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
 		}
 	}
 
-	.hero-engineer {
-		animation: fadeIn 0.8s ease-out 0.4s both;
-	}
-
 	@keyframes rocketIn {
 		from {
 			opacity: 0;
@@ -97,7 +96,30 @@ import EngineerMobile from '../../assets/home/hero_bg_mobile.png';
 		}
 	}
 
-	.hero-rocket {
-		animation: rocketIn 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) 0.6s both;
+	.hero-engineer-animate {
+		animation: fadeIn 0.8s ease-out both;
+	}
+
+	.hero-rocket-animate {
+		animation: rocketIn 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) both;
 	}
 </style>
+
+<script>
+	function animateWhenLoaded(img: HTMLImageElement, animClass: string) {
+		const trigger = () => img.classList.add(animClass);
+		if (img.complete) {
+			trigger();
+		} else {
+			img.addEventListener('load', trigger, { once: true });
+		}
+	}
+
+	const engineer = document.getElementById('heroEngineer') as HTMLImageElement | null;
+	const engineerMobile = document.getElementById('heroEngineerMobile') as HTMLImageElement | null;
+	const rocket = document.getElementById('heroRocket') as HTMLImageElement | null;
+
+	if (engineer) animateWhenLoaded(engineer, 'hero-engineer-animate');
+	if (engineerMobile) animateWhenLoaded(engineerMobile, 'hero-engineer-animate');
+	if (rocket) animateWhenLoaded(rocket, 'hero-rocket-animate');
+</script>
